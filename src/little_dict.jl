@@ -150,16 +150,16 @@ function get(default::Base.Callable, dd::LittleDict, key)
     end
 end
 
-function Base.iterate(dd::LittleDict, ii=1)
+function Base.iterate(dd::LittleDict{K,V}, ii=1) where {K,V}
     ii > length(dd.keys) && return nothing
-    return (dd.keys[ii] => dd.vals[ii], ii+1)
+    return (Pair{K,V}(dd.keys[ii], dd.vals[ii]), ii+1)
 end
 
 # lazy reverse iteration
-function Base.iterate(rdd::Iterators.Reverse{<:LittleDict}, ii=length(rdd.itr.keys))
+function Base.iterate(rdd::Iterators.Reverse{<:LittleDict{K,V}}, ii=length(rdd.itr.keys)) where {K,V}
     dd = rdd.itr
     ii < 1 && return nothing
-    return (dd.keys[ii] => dd.vals[ii], ii-1)
+    return (Pair{K,V}(dd.keys[ii], dd.vals[ii]), ii-1)
 end
 
 function merge(d1::LittleDict, others::AbstractDict...)
